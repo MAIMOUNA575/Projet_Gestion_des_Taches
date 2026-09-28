@@ -1,0 +1,29 @@
+meta {
+  name: Filter tasks
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/tasks?priority=high
+  body: none
+  auth: none
+}
+
+params:query {
+  priority: high
+}
+
+headers {
+  Authorization: Bearer {{token}}
+}
+
+tests {
+  test("status is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  test("all results have priority high", function() {
+    const tasks = res.getBody();
+    tasks.forEach(t => expect(t.priority).to.equal("high"));
+  });
+}

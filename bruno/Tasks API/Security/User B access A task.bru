@@ -1,0 +1,21 @@
+meta {
+  name: User B access A task
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/tasks/{{taskIdA}}
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{tokenB}}
+}
+
+tests {
+  test("status is 404", function() {
+    expect(res.getStatus()).to.equal(404);
+  });
+}

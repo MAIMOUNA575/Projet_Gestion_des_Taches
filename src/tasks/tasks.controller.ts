@@ -2,16 +2,15 @@ import { Controller, Body, Post, Get, Query, Param, NotFoundException, Put, Patc
 import { Session, type UserSession } from '@thallesp/nestjs-better-auth';
 import { prisma } from '../lib/auth.js';
 import type { Priority } from "../generated/prisma/enums.js";
+import { CreateTaskDto } from "./dto/create-task.dto.js";
+import { UpdateTaskDto } from "./dto/update-task.dto.js";
+
 
 @Controller('tasks')
 export class TasksController {
     @Post()
     async create(
-        @Body() body: {
-            title: string;
-            description?: string;
-            priority: Priority
-        },
+        @Body() body: CreateTaskDto,
         @Session() session: UserSession) {
         const task = await prisma.task.create({
             data: {
@@ -55,7 +54,7 @@ export class TasksController {
     @Put(':id')
     async update(
         @Param('id') id: string,
-        @Body() body: { title?: string; description?: string; priority?: Priority },
+        @Body() body: UpdateTaskDto,        
         @Session() session: UserSession) {
         const existingTask = await prisma.task.findFirst({
             where: { id: Number(id), userId: session.user.id },
@@ -87,5 +86,16 @@ export class TasksController {
 			data: { completed: true },
 		});
 		return updatedTask;
+    }
+    @Delete(':id')
+    @HttpCode(HttpStatus.NO_CONTENT)
+    async remove(@Param('id') id: string ,@Session() session: UserSession){
+        		const existingTask = await prisma.task.findFirst({
+			where: { id: Number(id), userId: session.user.id },
+		});
+		if (!existingTask) {
+			throw new NotFoundException("Tâche non trouvée");
+		}
+        		await prisma.task.delete({ where: { id: Number(id) } });
     }
 }

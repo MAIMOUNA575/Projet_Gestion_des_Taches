@@ -1,0 +1,24 @@
+meta {
+  name: Complete task
+  type: http
+  seq: 6
+}
+
+patch {
+  url: {{baseUrl}}/tasks/{{taskId}}/complete
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{token}}
+}
+
+tests {
+  test("status is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  test("completed is true", function() {
+    expect(res.getBody().completed).to.equal(true);
+  });
+}

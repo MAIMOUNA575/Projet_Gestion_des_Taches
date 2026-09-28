@@ -1,0 +1,35 @@
+meta {
+  name: Update task
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{baseUrl}}/tasks/{{taskId}}
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: Bearer {{token}}
+}
+
+body:json {
+  {
+    "title": "Apprendre NestJS et Bruno",
+    "priority": "medium"
+  }
+}
+
+tests {
+  test("status is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  test("title updated", function() {
+    expect(res.getBody().title).to.equal("Apprendre NestJS et Bruno");
+  });
+  test("priority updated", function() {
+    expect(res.getBody().priority).to.equal("medium");
+  });
+}

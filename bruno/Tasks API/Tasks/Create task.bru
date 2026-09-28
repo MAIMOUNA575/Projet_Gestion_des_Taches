@@ -1,0 +1,43 @@
+meta {
+  name: Create task
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/tasks
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: Bearer {{token}}
+}
+
+body:json {
+  {
+    "title": "Apprendre NestJS",
+    "description": "Terminer le projet",
+    "priority": "high"
+  }
+}
+
+script:post-response {
+  bru.setVar("taskId", res.body.id);
+}
+
+tests {
+  test("status is 201", function() {
+    expect(res.getStatus()).to.equal(201);
+  });
+  test("has id", function() {
+    expect(res.getBody()).to.have.property("id");
+  });
+  test("priority is high", function() {
+    expect(res.getBody().priority).to.equal("high");
+  });
+  test("completed is false", function() {
+    expect(res.getBody().completed).to.equal(false);
+  });
+}

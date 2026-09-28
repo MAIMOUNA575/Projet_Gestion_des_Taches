@@ -1,0 +1,32 @@
+meta {
+  name: Login user B
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/auth/login
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "email": "paul@example.com",
+    "password": "Password123"
+  }
+}
+
+script:post-response {
+  bru.setVar("tokenB", res.body.access_token);
+}
+
+tests {
+  test("has access_token", function() {
+    expect(res.getBody()).to.have.property("access_token");
+  });
+}

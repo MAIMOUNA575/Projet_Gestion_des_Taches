@@ -5,7 +5,8 @@ import { AuthModule as BetterAuthModule } from "@thallesp/nestjs-better-auth";
 import {auth} from "./lib/auth.js";
 import { AuthModule } from './auth/auth.module.js';
 import { TasksModule } from './tasks/tasks.module.js';
-
+import { APP_PIPE } from "@nestjs/core";
+import { ZodValidationPipe } from "nestjs-zod";
 
 @Module({
 	imports: [
@@ -17,6 +18,12 @@ import { TasksModule } from './tasks/tasks.module.js';
 		TasksModule,
 	],
 	controllers: [AppController],
-	providers: [AppService],
+		providers: [
+		AppService,
+		{
+			provide: APP_PIPE,
+			useClass: ZodValidationPipe,
+		},
+	],
 })
 export class AppModule {}
